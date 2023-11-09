@@ -15,6 +15,7 @@ It comes with a FreeMint install with many things such as network, SSH server al
 ## Installation
 ### Copy Aranym data folder on the host side
  Aranym data and configuration is expected to be found in /aranym folder in container. This folder **shall** be mapped to some host folder, e.g. /home/docker/aranym. Make sure docker user has full access to this folder.Expected content is available at [aranym_data on free.fr](http://vision.atari.org/download/aranym_data.tar.xz) or [aranym_data on goodoldtos.com](https://vision.goodoldtos.com/download/aranym_data.tar.xz).
+
 Copy the tar.xz file into the mapped folder just created and run:
 ```
 tar -xvf aranym_data.tar.xz
