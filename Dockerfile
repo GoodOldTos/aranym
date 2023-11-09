@@ -1,4 +1,4 @@
-# This Dockerfile is used to build an headles vnc image based on Debian
+# This Dockerfile is used to build an headless Aranym application from an image based on Debian
 FROM debian:latest
 
 USER root
@@ -11,8 +11,7 @@ ENV REFRESHED_AT 2023-11-07
 
 ### Environment
 ## Connection ports for controlling the UI:
-# VNC port:5901
-# noVNC webport, connect via http://IP:6901/?password=vncpassword
+# VNC port:5900
 ENV STARTUPDIR=/app \
     ARANYM_RESOLUTION=1680x1050x16 \
     DISPLAY=:1 \
@@ -20,9 +19,6 @@ ENV STARTUPDIR=/app \
     ARANYM_MODE=JIT \
     ARANYM_SSH=22000 \
     ARANYM_FASTRAM=256
-
-#    VNC_PW=vncpassword \
-#    VNC_VIEW_ONLY=false
 
 EXPOSE $VNC_PORT
 EXPOSE 22
