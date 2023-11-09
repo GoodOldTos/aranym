@@ -14,9 +14,19 @@ It comes with a FreeMint install with many things such as network, SSH server al
 
 ## Installation
 ### Copy Aranym data folder on the host side
- Aranym data and configuration is expected to be found in /aranym folder in container. This folder **shall** be mapped to some host folder, e.g. /home/docker/aranym. Make sure docker user has full access to this folder.Expected content is available at [aranym_data on free.fr](http://vision.atari.org/download/aranym_data.tar.xz) or [aranym_data on goodoldtos.com](https://vision.goodoldtos.com/download/aranym_data.tar.xz).
+ Aranym data and configuration is expected to be found in /aranym folder in container. This folder **shall** be mapped to some host folder, e.g. /home/docker/aranym. Make sure docker user has full access to this folder.Expected content is available at  [aranym_data on goodoldtos.com](https://vision.goodoldtos.com/download/aranym_data.tar.xz) or [aranym_data on free.fr](http://vision.atari.org/download/aranym_data.tar.xz).
 
-Copy the tar.xz file into the mapped folder just created and run:
+So typically open a terminal to your docker host,, create a folder for sharing data with container and get this archive (first link should be faster):
+```
+mkdir -p /some/path
+cd /some/path
+wget https://vision.goodoldtos.com/download/aranym_data.tar.xz
+-or-
+wget http://vision.atari.org/download/aranym_data.tar.xz
+
+```
+
+And then extract the contents:
 ```
 tar -xvf aranym_data.tar.xz
 ```
@@ -54,7 +64,6 @@ services:
       - VNC_KEYBOARD=fr
       - ARANYM_RESOLUTION=1680x960x32
       - ARANYM_MODE=JIT
-      - ARANYM_SSH=22000
       - ARANYM_FASTRAM=512
     cap_add:
       - NET_ADMIN
@@ -70,7 +79,7 @@ Some explanations:
       - 5900:5900
       - 22000:22000
 ```
-Here you may need to change the **first** 5900 or 22000 ports. 5900 is the port number to use for VNC connection; 22000 is the port number to use to connect to FreeMint from a SSH client.
+Here you may need to change the **first** 5900 or 22000 ports. 5900 is the port number to use for VNC connection; 22000 is the port number to use to connect to FreeMint from a SSH client within the container.
 
 #### Environment variables:
 | Environment variable        | Description           | Defaut value  |
@@ -78,7 +87,6 @@ Here you may need to change the **first** 5900 or 22000 ports. 5900 is the port 
 | VNC_KEYBOARD     | This is the keyboard layout to use for X11 VNC session. Make sure you use the same on FreeMint (you will be prompted in Mint at first start) | None |
 | ARANYM_RESOLUTION      | This is the display size of the X11 client area, basically the GEM desktop resolution in format widthxheightxplanes. It might be adjusted by container to make sure consistent values are used. Note that X11 VNC sesion is hard-coded to use 16 bitplanes to reduce network bandwidth; however Atari machine may be using any valid number of planes.     |   1680x1050x16 |
 | ARANYM_MODE      |    Mode for Aranym. Could be JIT or MMU. Any other value will start Aranym in normal mode. | JIT |
-| ARANYM_SSH      |    Exposed container port to use for connecting to FreeMint via SSH. Note it has to be the same as the (left) port mentionned in ports section. | 22000 |
 | ARANYM_FASTRAM      |    Amount of Fast RAM, in MB, for the Atari machine. | 256 |
 
 #### Docker Network specfic:

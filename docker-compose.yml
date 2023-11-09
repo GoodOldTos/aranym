@@ -11,7 +11,6 @@ services:
       - VNC_KEYBOARD=fr
       - ARANYM_RESOLUTION=1680x960x32
       - ARANYM_MODE=JIT
-      - ARANYM_SSH=22000
       - ARANYM_FASTRAM=512
     cap_add:
       - NET_ADMIN
@@ -19,4 +18,3 @@ services:
       - /dev/net/tun
     volumes:
     - /mnt/xdata/docker_data/bck/aranym/data:/aranym
-
