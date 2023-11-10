@@ -1,5 +1,7 @@
 # A Docker image for Aranym to run Atari machines on a Docker host
-Customized EasyAraMint package (highly recommended package to download for quick start setup!) and more (including Dockerfile) available at: [Docker aranym on GitHub](https://github.com/GoodOldTos/aranym)
+Customized EasyAraMint package (highly recommended package to download for quick start setup!) and more (including Dockerfile) available at: [Docker aranym on GitHub](https://github.com/GoodOldTos/aranym).
+
+A demonstration video is available on [You Tube](https://www.youtube.com/watch?v=9cT6eDag4eM) for a Quick Start.
 
 ## What is it?
 It's a Docker container running [Aranym](https://aranym.github.io/). You connect to Aranym via a X11 VNC client such as [TightVNC Viewer](https://www.tightvnc.com/download.php).
@@ -85,7 +87,7 @@ Here you may need to change the **first** 5900 or 22000 ports. 5900 is the port 
 | Environment variable        | Description           | Defaut value  |
 | ------------- |:-------------:| -----:|
 | VNC_KEYBOARD     | This is the keyboard layout to use for X11 VNC session. Make sure you use the same on FreeMint (you will be prompted in Mint at first start) | None |
-| ARANYM_RESOLUTION      | This is the display size of the X11 client area, basically the GEM desktop resolution in format widthxheightxplanes. It might be adjusted by container to make sure consistent values are used. Note that X11 VNC sesion is hard-coded to use 16 bitplanes to reduce network bandwidth; however Atari machine may be using any valid number of planes.     |   1680x1050x16 |
+| ARANYM_RESOLUTION      | This is the display size of the X11 client area, basically the GEM desktop resolution in format widthxheightxplanes. It might be adjusted by container to make sure consistent values are used. Note that X11 VNC session is hard-coded to use 16 bitplanes to reduce network bandwidth; however Atari machine may be using any valid number of planes.     |   1680x1050x16 |
 | ARANYM_MODE      |    Mode for Aranym. Could be JIT or MMU. Any other value will start Aranym in normal mode. | JIT |
 | ARANYM_FASTRAM      |    Amount of Fast RAM, in MB, for the Atari machine. | 256 |
 
