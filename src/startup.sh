@@ -2,6 +2,13 @@
 # Let's move to app folder
 cd /app
 
+# In case /aranym is empty, let's try to download Aranym data package
+./check_ara_data.sh
+
+# Remove X11 lock to enable container to be restarted after FreeMint exited
+# Else Xvfb will fail to start
+rm -f /tmp/.X1-lock
+
 # Fix ARANYM_RESOLUTION if required and define VNC_RESOLUTION
 source resolutions.sh
 echo 'Will use:'
@@ -12,11 +19,7 @@ sleep 1
 fluxbox &
 sleep 1
 x11vnc -noxdamage -noxfixes -forever -rfbauth /aranym/x11vnc.pass &
-sleep 1
 setxkbmap $VNC_KEYBOARD
-#x11vnc -noxdamage -forever -rfbauth /etc/x11vnc.pass &
-#x11vnc -xkb -noxrecord -noxfixes -noxdamage -rfbauth /etc/x11vnc.pass &
-#x11vnc -noxdamage -rfbauth /etc/x11vnc.pass &
 
 # Setup container network to enable Mint accessing it
 # 2 steps:
@@ -79,8 +82,6 @@ sed -i "/HostIP =/c\HostIP = $container_gateway" /aranym/config
 echo 'Setting FastRAM to' $ARANYM_FASTRAM 'MB'
 sed -i "/FastRAM =/c\FastRAM = $ARANYM_FASTRAM" /aranym/config
 
-# Let's move to aranym folder
-cd /aranym
 
 case "$ARANYM_MODE" in
  "JIT")
@@ -103,7 +104,7 @@ esac
 # Remove any previous coredump due to unclear disconnection
 rm -f /aranym/core
 
-/usr/bin/$ara_bin -c config
+/usr/bin/$ara_bin -c /aranym/config
 if [[ $? -eq 0 ]]
 then
   echo 'Aranym exited normally'
@@ -115,7 +116,7 @@ else
     echo 'Setting-up memoffset for JIT again...'
     ./setup_ara_jit.sh
   fi
-  /usr/bin/$ara_bin -c config
+  /usr/bin/$ara_bin -c /aranym/config
 fi
 
 # When Aranym exists, stop container (tail commented out)

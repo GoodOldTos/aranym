@@ -2,15 +2,17 @@ version: "3.9"
 services:
   aranym:
     container_name: aranym
-    image: goodoldtos/aranym
+    image: aranym
     restart: on-failure:1
     ports:
       - 5900:5900
       - 22000:22000
     environment:
+      - TZ=Europe/Paris
       - VNC_KEYBOARD=fr
       - ARANYM_RESOLUTION=1680x960x32
       - ARANYM_MODE=JIT
+      - ARANYM_SSH=22000
       - ARANYM_FASTRAM=512
     cap_add:
       - NET_ADMIN

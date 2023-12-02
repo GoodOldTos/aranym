@@ -32,7 +32,7 @@ And then extract the contents:
 ```
 tar -xvf aranym_data.tar.xz
 ```
-Then you can delete ara_data.tar.xz
+Then you can delete aranym_data.tar.xz
 
 In the extracted folder, you will find mainly:
 | Element        | Location (in container)          | Description  |

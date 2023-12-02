@@ -1,4 +1,4 @@
-# This Dockerfile is used to build an headless Aranym application from an image based on Debian
+# This Dockerfile is used to build an headles vnc image based on Debian
 FROM debian:latest
 
 USER root
@@ -7,11 +7,11 @@ USER root
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive && apt install -y net-tools iputils-ping iproute2 xvfb x11vnc fluxbox nftables aranym
 
 MAINTAINER GoodOldTOS "goodoldtos@free.fr"
-ENV REFRESHED_AT 2023-11-07
+ENV REFRESHED_AT 2023-11-19
 
 ### Environment
 ## Connection ports for controlling the UI:
-# VNC port:5900
+# VNC port:5901
 ENV STARTUPDIR=/app \
     ARANYM_RESOLUTION=1680x1050x16 \
     DISPLAY=:1 \
