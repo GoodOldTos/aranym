@@ -1,6 +1,8 @@
 # A Docker image for Aranym to run Atari machines on a Docker host
 Customized EasyAraMint package (highly recommended package to download for quick start setup!) and more (including Dockerfile) available at: [Docker aranym on GitHub](https://github.com/GoodOldTos/aranym).
 
+Docker hub link: https://hub.docker.com/r/goodoldtos/aranym
+
 A demonstration video is available on [You Tube](https://www.youtube.com/watch?v=9cT6eDag4eM) for a Quick Start.
 
 ## What is it?
@@ -16,6 +18,8 @@ It comes with a FreeMint install with many things such as network, SSH server al
 
 ## Installation
 ### Copy Aranym data folder on the host side
+**Please note this section is no longer required as container should automatically download Aranym data. You should go directly to next section (Create docker-compose file).**
+
  Aranym data and configuration is expected to be found in /aranym folder in container. This folder **shall** be mapped to some host folder, e.g. /home/docker/aranym. Make sure docker user has full access to this folder.Expected content is available at  [aranym_data on goodoldtos.com](https://vision.goodoldtos.com/download/aranym_data.tar.xz) or [aranym_data on free.fr](http://vision.atari.org/download/aranym_data.tar.xz).
 
 So typically open a terminal to your docker host,, create a folder for sharing data with container and get this archive (first link should be faster):
@@ -32,7 +36,7 @@ And then extract the contents:
 ```
 tar -xvf aranym_data.tar.xz
 ```
-Then you can delete ara_data.tar.xz
+Then you can delete aranym_data.tar.xz
 
 In the extracted folder, you will find mainly:
 | Element        | Location (in container)          | Description  |
@@ -132,6 +136,8 @@ Use a SSH client such as [Putty](https://www.putty.org/) to open a SSH session t
 
 ## Some remarks
 ### Container exit
+**This remark is no longer valid as container restart has been fixed**
+
 Upon container exit (NOT X11 VNC session exit), typically by initiating a shutdown from Mint, you should delete the container as well or next start will lead to errors on X11 stack. Typically, you have to run the following on Docker host, from docker-compose file folder:
 
 ```
@@ -145,7 +151,7 @@ If you close the X11 client, you can restart it later on and you will find your 
 
 ## MIT License
 
-Copyright (c) 2023 GoodOldTOS
+Copyright (c) 2023 Good Old TOS
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
