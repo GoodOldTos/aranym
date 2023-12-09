@@ -1,5 +1,7 @@
 # A Docker image for Aranym to run Atari machines on a Docker host
-Customized EasyAraMint package (highly recommended package to download for quick start setup!) and more (including Dockerfile) available at: [Docker aranym on GitHub](https://github.com/GoodOldTos/aranym).
+Customized EasyAraMint package (highly recommended package to download for quick start setup!) and more (including Dockerfile) available at:
+
+[Docker aranym on GitHub](https://github.com/GoodOldTos/aranym).
 
 Docker hub link: https://hub.docker.com/r/goodoldtos/aranym
 
@@ -67,16 +69,30 @@ services:
       - 5900:5900
       - 22000:22000
     environment:
+      - TZ=Europe/Paris
       - VNC_KEYBOARD=fr
       - ARANYM_RESOLUTION=1680x960x32
       - ARANYM_MODE=JIT
+      - ARANYM_SSH=22000
       - ARANYM_FASTRAM=512
+      - ARANYM_ID=10   # optional, last digit of IP address, 2 if not present
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun
     volumes:
     - /mnt/xdata/docker_data/bck/aranym/data:/aranym
+# Following volumes are optional, make sense if you want to connect to some shared NFS/CIFS folder available on the host
+# Available folders created on the container are:
+# /mnt/photo
+# /mnt/video
+# /mnt/music
+# /mnt/data
+# /mnt/extra
+# Examples:
+#    - /mnt/nas/photo:/mnt/photo
+#    - /mnt/nas/video:/mnt/video
+#    - /mnt/nas/documents:/mnt/data
 ```
 Some explanations:
 #### Exposed ports by Docker host:
@@ -94,6 +110,7 @@ Here you may need to change the **first** 5900 or 22000 ports. 5900 is the port 
 | ARANYM_RESOLUTION      | This is the display size of the X11 client area, basically the GEM desktop resolution in format widthxheightxplanes. It might be adjusted by container to make sure consistent values are used. Note that X11 VNC session is hard-coded to use 16 bitplanes to reduce network bandwidth; however Atari machine may be using any valid number of planes.     |   1680x1050x16 |
 | ARANYM_MODE      |    Mode for Aranym. Could be JIT or MMU. Any other value will start Aranym in normal mode. | JIT |
 | ARANYM_FASTRAM      |    Amount of Fast RAM, in MB, for the Atari machine. | 256 |
+| ARANYM_ID      |   ID for this virrtual Atari machine. This ID will be used as last digit of the IP address. | 10|
 
 #### Docker Network specfic:
 ```yaml
@@ -124,13 +141,14 @@ Original password should be kept in x11vnc.pass.ori to secure any coming back.
 - To change SSH password, just open a SSH connection and use Linux command "passwd' to change it.
 
 ## Usage
-Once docker-compose file is customized, make sure you have downloaded  [aranym_data on free.fr](http://vision.atari.org/download/aranym_data.tar.xz) or [aranym_data on goodoldtos.com](https://vision.goodoldtos.com/download/aranym_data.tar.xz) and extracted it into docker host folder mapped to /aranym container volume.
-
-Then you can start the container either via Portainer or by docker-compose (from folder where docker-compose.yml file is located):
+Once docker-compose file is customized, you can start the container either via Portainer or by docker-compose (from folder where docker-compose.yml file is located):
 
 ```
 docker compose up -d 
 ```
+Look at Docker logs (docker logs -f aranym), you should see that container is automatically downloading Aranym data (C, D drives and host_fs). If an error occurs:
+Download  [aranym_data on free.fr](http://vision.atari.org/download/aranym_data.tar.xz) or [aranym_data on goodoldtos.com](https://vision.goodoldtos.com/download/aranym_data.tar.xz) and extracted it into docker host folder mapped to /aranym container volume.
+
 Using a VNC client (e.g. [TightVNC Viewer](https://www.tightvnc.com/download.php)), connect to the IP of the host running Docker and port 5900 (if you did not change it in docker-compose file).
 Use a SSH client such as [Putty](https://www.putty.org/) to open a SSH session to Mint. 
 
