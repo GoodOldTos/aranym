@@ -5,7 +5,7 @@ if [ ! -f /aranym/easymint/easymint_c.img ]
 then
     echo "Aranym data NOT found, let's try to download it..."
     echo "**************************************************************"
-    echo "* Note this has to chance to work only if this               *"
+    echo "* Note this has a chance to work only if this                *"
     echo "* Container has Internet access, if not please go to:        *"
     echo "* https://hub.docker.com/repository/docker/goodoldtos/aranym *"
     echo "* To follow instructions on how to install Aranym data       *"

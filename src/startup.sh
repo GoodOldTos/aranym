@@ -26,6 +26,7 @@ setxkbmap $VNC_KEYBOARD
 # 1) Create tap0 device for Aranym to expose eth0 in Mint with access to container's network
 # 2) Instruct Mint of network settings and port forwarding from container
 # 3) Modify Aranym config file at /aranym/config to tell Aranym about Atari IP, netmask and host IP (gateway actually)
+# 4) If present in environement, prepare hostname file in host_fs/xsys/hostname
 # For 1), we need:
 # - container_ip: the IP address of the container (bridged by docker0)
 # - container_netmask: its netmask
@@ -37,6 +38,8 @@ setxkbmap $VNC_KEYBOARD
 # - atari_ip
 # - container_netmask
 # - container_gateway
+# For 4), we need:
+# - ARANYM_ID
 # 1)
 container_ip=$(ifconfig eth0 | awk '/netmask/{ print $2;} ')
 container_netmask=$(ifconfig eth0 | awk '/netmask/{ print $4;} ')
@@ -49,22 +52,25 @@ echo 'Setting-up tap0 in container...'
 
 # 2)
 # Find a feee IP within container network
-# Make it simple: try some IPs after container's IP
-# Hoping netmask is not too weird
-last_digit=$(echo $container_ip | awk -F"." '{print $4;}')
-for i in $(seq $last_digit 254)
-do
-  test_ip=${container_ip%.*}."$i"
-  ping $test_ip -c2 > /dev/null
-  if [[ $? -eq 0 ]]
-  then
-    echo $test_ip 'is already used.'
-  else
-    echo $test_ip 'is free, will be used for Atari IP.'
-    atari_ip=$test_ip
-   break
+# Set the last digit of IP address from docker-compose ARANYM_ID or set it to 2
+# And take container_ip for first 3 digits of the IP
+if [[ -z "${ARANYM_ID}" ]]; then
+  aranym_id="2"
+  atari_hostname="aranym"
+else
+  aranym_id="${ARANYM_ID}"
+  if (( aranym_id < 2 )); then
+    aranym_id="2"
   fi
-done
+  if (( aranym_id > 254 )); then
+    aranym_id="2"
+  fi
+  atari_hostname="aranym""$aranym_id"
+fi
+echo 'aranym_id:' $aranym_id
+atari_ip=${container_ip%.*}."$aranym_id"
+echo 'atari_ip:' $atari_ip
+echo 'atari_hostname:' $atari_hostname
 ./ssh_mint.sh $atari_ip $ARANYM_SSH
 
 # 3)
@@ -73,6 +79,9 @@ sed -i "/AtariIP =/c\AtariIP = $atari_ip" /aranym/config
 sed -i "/Netmask =/c\Netmask = $container_netmask" /aranym/config
 sed -i "/HostIP =/c\HostIP = $container_gateway" /aranym/config
 
+# 4)
+# Create hostname for Mint to first_setup.sh (ran by taskbar at first boot) to copy it over /etc/sysconfig/hostname
+echo $atari_hostname > /aranym/host_fs/xsys/hostname
 
 # Update fvdi.sys to cope with VNC_RESOLUTION
 #echo 'Skipping FVDI.SYS update for now...'
@@ -109,14 +118,16 @@ if [[ $? -eq 0 ]]
 then
   echo 'Aranym exited normally'
 else
-  echo 'Error running Aranym; giving it a new try...'
-  rm -f /aranym/core
-  if [[ $$ARANYM_MODE == "JIT" ]]
-  then
-    echo 'Setting-up memoffset for JIT again...'
-    ./setup_ara_jit.sh
-  fi
-  /usr/bin/$ara_bin -c /aranym/config
+  echo 'Error running Aranym; will try again if not already done.'
+  echo 'If error persists, please check Docker logs.'
+#  echo 'Error running Aranym; giving it a new try...'
+#  rm -f /aranym/core
+#  if [[ $$ARANYM_MODE == "JIT" ]]
+#  then
+#    echo 'Setting-up memoffset for JIT again...'
+#    ./setup_ara_jit.sh
+#  fi
+#  /usr/bin/$ara_bin -c /aranym/config
 fi
 
 # When Aranym exists, stop container (tail commented out)

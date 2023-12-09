@@ -2,7 +2,7 @@ version: "3.9"
 services:
   aranym:
     container_name: aranym
-    image: aranym
+    image: goodoldtos/aranym
     restart: on-failure:1
     ports:
       - 5900:5900
@@ -14,9 +14,21 @@ services:
       - ARANYM_MODE=JIT
       - ARANYM_SSH=22000
       - ARANYM_FASTRAM=512
+      - ARANYM_ID=10   # optional, last digit of IP address, 2 if not present
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun
     volumes:
     - /mnt/xdata/docker_data/bck/aranym/data:/aranym
+# Following volumes are optional, make sense if you want to connect to some shared NFS/CIFS folder available on the host
+# Available folders created on the container are:
+# /mnt/photo
+# /mnt/video
+# /mnt/music
+# /mnt/data
+# /mnt/extra
+# Examples:
+#    - /mnt/nas/photo:/mnt/photo
+#    - /mnt/nas/video:/mnt/video
+#    - /mnt/nas/documents:/mnt/data
